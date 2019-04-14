@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+
+        function sendEmail(e) {
+            e.preventDefault();
+            var data = {
+                from: $("#from").val(),
+                to: $("#to").val(),
+                subject: $("#subject").val(),
+                body: $("#body").val()
+            };
+            $("button").attr("disabled", "disabled");
+            google.script.run.withSuccessHandler(function(text) {
+                M.toast({html: text});
+                $("button").removeAttr("disabled");
+            }).sendEmail(data);
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <h4 class="light">MailMan v2.0</h4>
+            </div>
+        </div>
+        <form onsubmit="sendEmail(event)">
+            <div class="row">
+                <div class="input-field col s12">
+                    <select name="from" id="from">
+                        <? for (var a=0; a<aliases.length; a++) { ?>
+                            <option value="<?= aliases[a]; ?>"><?= aliases[a]; ?></option>
+                        <? } ?>
+                    </select>
+                    <label for="from">Sender's Email Address</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="email" placeholder="Enter email here" id="to">
+                    <label for="to">Recipient's Email Address</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="text" placeholder="Enter subject" id="subject">
+                    <label for="subject">Subject Line</label>
+                </div>
+                <div class="input-field col s12">
+                    <textarea id="body" class="materialize-textarea"></textarea>
+                    <label for="body">Email Body</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <button class="btn" type="submit">Send Email</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
