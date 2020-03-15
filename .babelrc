@@ -1,18 +1,14 @@
 {
     "presets": [
-        [
-            "@babel/preset-env",
-            {
-                "modules": false
-            }
-        ]
+      [
+        "@babel/preset-env",
+        {
+          "modules": false
+        }
+      ]
     ],
     "plugins": [
-        "@babel/plugin-transform-property-literals",
-        "@babel/plugin-transform-member-expression-literals",
-        "@babel/plugin-proposal-class-properties",
-        "@babel/plugin-proposal-object-rest-spread",
-        "@babel/plugin-transform-object-assign",
-        "array-includes"
+      "@babel/plugin-proposal-object-rest-spread",
+      "@babel/plugin-proposal-optional-chaining"
     ]
-}
+  }

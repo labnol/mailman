@@ -8,41 +8,42 @@
  */
 
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const GasPlugin = require('gas-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const { version } = require('./package.json');
 
-const destination = 'dist';
-const mode = 'production';
+const src = path.resolve(__dirname, 'src');
+const destination = path.resolve(__dirname, 'dist');
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  mode,
+  mode: isProduction ? 'production' : 'none',
   context: __dirname,
-  entry: './src/index.js',
+  entry: `${src}/index.js`,
   output: {
     filename: `code-${version}.js`,
-    path: path.resolve(__dirname, destination),
+    path: destination,
     libraryTarget: 'this'
   },
   resolve: {
     extensions: ['.js']
   },
   optimization: {
+    minimize: isProduction,
     minimizer: [
-      new UglifyJSPlugin({
-        uglifyOptions: {
-          ie8: true,
+      new TerserPlugin({
+        terserOptions: {
+          ecma: 6,
           warnings: false,
-          mangle: false,
+          mangle: {},
           compress: {
-            properties: false,
-            warnings: false,
-            drop_console: false
+            drop_console: false,
+            drop_debugger: isProduction
           },
           output: {
-            beautify: true
+            beautify: !isProduction
           }
         }
       })
@@ -57,7 +58,8 @@ module.exports = {
         loader: 'eslint-loader',
         options: {
           cache: true,
-          failOnError: false
+          failOnError: false,
+          fix: true
         }
       },
       {
@@ -73,17 +75,18 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
-        from: './src/**/*.html',
+        from: `${src}/**/*.html`,
         flatten: true,
-        to: path.resolve(__dirname, destination)
+        to: destination
       },
       {
-        from: './appsscript.json',
-        to: path.resolve(__dirname, destination)
+        from: `${src}/../appsscript.json`,
+        to: destination
       }
     ]),
     new GasPlugin({
-      comments: false
+      comments: false,
+      source: 'digitalinspiration.com'
     })
   ]
 };

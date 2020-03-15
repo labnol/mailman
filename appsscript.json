@@ -21,5 +21,6 @@
     "https://www.googleapis.com/auth/script.webapp.deploy",
     "https://www.googleapis.com/auth/script.container.ui",
     "https://www.googleapis.com/auth/spreadsheets.currentonly"
-  ]
+  ],
+  "runtimeVersion": "V8"
 }
